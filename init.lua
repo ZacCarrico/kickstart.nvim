@@ -249,7 +249,7 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-   { 'pocco81/auto-save.nvim', opts = { write_all_buffers = true } } -- auto-saves files,
+  { 'pocco81/auto-save.nvim', opts = { write_all_buffers = true } }, -- auto-saves files
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
