@@ -166,6 +166,13 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- [[ Folding Configuration ]]
+-- Enable folding with automatic detection
+vim.o.foldenable = true
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.o.foldlevelstart = 99 -- Start with all folds open
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
