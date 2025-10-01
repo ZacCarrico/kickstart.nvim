@@ -206,6 +206,10 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- Git keymaps
+vim.keymap.set('n', '<leader>gc', ':Git commit<CR>', { desc = '[G]it [C]ommit' })
+vim.keymap.set('n', '<leader>gl', ':Git log<CR>', { desc = '[G]it [L]og' })
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -290,6 +294,16 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      on_attach = function(bufnr)
+        local gitsigns = require('gitsigns')
+        -- Stage hunk under cursor with 'ga'
+        vim.keymap.set('n', 'ga', gitsigns.stage_hunk, { buffer = bufnr, desc = 'Git: Stage hunk' })
+        vim.keymap.set('v', 'ga', function()
+          gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end, { buffer = bufnr, desc = 'Git: Stage hunk' })
+        -- Navigate to next hunk with 'gn'
+        vim.keymap.set('n', 'gn', gitsigns.next_hunk, { buffer = bufnr, desc = 'Git: Next hunk' })
+      end,
     },
   },
 
