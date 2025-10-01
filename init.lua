@@ -306,11 +306,11 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-        local gitsigns = require('gitsigns')
+        local gitsigns = require 'gitsigns'
         -- Stage hunk under cursor with 'ga'
         vim.keymap.set('n', 'ga', gitsigns.stage_hunk, { buffer = bufnr, desc = 'Git: Stage hunk' })
         vim.keymap.set('v', 'ga', function()
-          gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
         end, { buffer = bufnr, desc = 'Git: Stage hunk' })
         -- Navigate to next hunk with 'gn'
         vim.keymap.set('n', 'gn', gitsigns.next_hunk, { buffer = bufnr, desc = 'Git: Next hunk' })
