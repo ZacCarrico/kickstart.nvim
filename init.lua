@@ -261,6 +261,17 @@ require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive', -- Git wrapper
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    opts = {
+      open_mapping = [[<c-\>]],
+      direction = 'float',
+      float_opts = {
+        border = 'curved',
+      },
+    },
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
