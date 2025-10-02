@@ -166,6 +166,9 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Show filename at the top of the window
+vim.o.winbar = '%f %m'
+
 -- [[ Folding Configuration ]]
 -- Enable folding with automatic detection
 vim.o.foldenable = true
