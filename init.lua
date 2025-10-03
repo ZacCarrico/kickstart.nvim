@@ -275,6 +275,22 @@ require('lazy').setup({
       },
     },
   },
+  {
+    'karb94/neoscroll.nvim',
+    config = function()
+      require('neoscroll').setup()
+      local neoscroll = require('neoscroll')
+      neoscroll.setup()
+      local keymap = {
+        ['<C-u>'] = function() neoscroll.ctrl_u({ duration = 250 }) end,
+        ['<C-d>'] = function() neoscroll.ctrl_d({ duration = 250 }) end,
+      }
+      local modes = { 'n', 'v', 'x' }
+      for key, func in pairs(keymap) do
+        vim.keymap.set(modes, key, func)
+      end
+    end,
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
