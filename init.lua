@@ -265,6 +265,7 @@ require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive', -- Git wrapper
+  { 'pocco81/auto-save.nvim', opts = { write_all_buffers = true } },
   {
     'akinsho/toggleterm.nvim',
     version = '*',
@@ -280,11 +281,15 @@ require('lazy').setup({
     'karb94/neoscroll.nvim',
     config = function()
       require('neoscroll').setup()
-      local neoscroll = require('neoscroll')
+      local neoscroll = require 'neoscroll'
       neoscroll.setup()
       local keymap = {
-        ['<C-u>'] = function() neoscroll.ctrl_u({ duration = 250 }) end,
-        ['<C-d>'] = function() neoscroll.ctrl_d({ duration = 250 }) end,
+        ['<C-u>'] = function()
+          neoscroll.ctrl_u { duration = 250 }
+        end,
+        ['<C-d>'] = function()
+          neoscroll.ctrl_d { duration = 250 }
+        end,
       }
       local modes = { 'n', 'v', 'x' }
       for key, func in pairs(keymap) do
