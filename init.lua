@@ -294,6 +294,30 @@ require('lazy').setup({
       end
     end,
   },
+  {
+    'hat0uma/csvview.nvim',
+    config = function()
+      require('csvview').setup {
+        parser = {
+          -- Async parsing for large files
+          async_chunksize = 50,
+        },
+        view = {
+          -- Display settings
+          min_column_width = 5,
+          spacing = 2,
+        },
+      }
+      -- Auto-enable CSV view when opening CSV/TSV files
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'csv', 'tsv' },
+        callback = function()
+          vim.cmd 'CsvViewEnable'
+        end,
+      })
+    end,
+    ft = { 'csv', 'tsv' },
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
