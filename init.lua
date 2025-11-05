@@ -93,6 +93,17 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
+-- [[ Poetry Virtual Environment Detection ]]
+-- Automatically detect and use poetry virtual environment for Python
+local handle = io.popen('poetry env info --path 2>/dev/null')
+if handle then
+  local result = handle:read('*a'):gsub('%s+', '')
+  handle:close()
+  if result ~= '' then
+    vim.g.python3_host_prog = result .. '/bin/python'
+  end
+end
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
