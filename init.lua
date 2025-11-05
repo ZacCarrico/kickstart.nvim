@@ -766,9 +766,15 @@ require('lazy').setup({
         -- gopls = {},
         pyright = {
           before_init = function(_, config)
-            local venv = vim.fn.systemlist('poetry env info -p')[1]
-            if venv and venv ~= '' then
-              config.settings.python.pythonPath = venv .. '/bin/python'
+            -- Try to find poetry venv from the project root
+            local root_dir = config.root_dir or vim.fn.getcwd()
+            local handle = io.popen(string.format('cd "%s" && poetry env info -p 2>/dev/null', root_dir))
+            if handle then
+              local venv = handle:read('*a'):gsub('%s+', '')
+              handle:close()
+              if venv ~= '' then
+                config.settings.python.pythonPath = venv .. '/bin/python'
+              end
             end
           end,
         },
