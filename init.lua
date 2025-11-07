@@ -219,6 +219,13 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- Git keymaps
 vim.keymap.set('n', '<leader>gc', ':Git commit<CR>', { desc = '[G]it [C]ommit' })
+vim.keymap.set('n', '<leader>gm', function()
+  local msg = vim.fn.input('Commit message: ')
+  if msg ~= '' then
+    vim.cmd('Git commit -a -m "' .. msg:gsub('"', '\\"') .. '"')
+  end
+end, { desc = '[G]it commit with [M]essage' })
+vim.keymap.set('n', '<leader>gA', ':Git commit --amend<CR>', { desc = '[G]it commit [A]mend' })
 vim.keymap.set('n', '<leader>gl', ':Git log<CR>', { desc = '[G]it [L]og' })
 vim.keymap.set('n', '<leader>gb', ':Git blame<CR>', { desc = '[G]it [B]lame' })
 
