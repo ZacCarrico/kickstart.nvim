@@ -285,6 +285,15 @@ require('lazy').setup({
   'tpope/vim-fugitive', -- Git wrapper
   { 'pocco81/auto-save.nvim', opts = { write_all_buffers = true } },
   {
+    'linrongbin16/gitlinker.nvim',
+    cmd = 'GitLink',
+    opts = {},
+    keys = {
+      { '<leader>gy', '<cmd>GitLink<cr>', mode = { 'n', 'v' }, desc = '[G]it [Y]ank link' },
+      { '<leader>gY', '<cmd>GitLink!<cr>', mode = { 'n', 'v' }, desc = '[G]it open link in browser' },
+    },
+  },
+  {
     'akinsho/toggleterm.nvim',
     version = '*',
     opts = {
