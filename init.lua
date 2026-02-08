@@ -197,6 +197,64 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- Switch to last buffer
 vim.keymap.set('n', '<leader>b', '<C-^>', { desc = 'Switch to last [B]uffer' })
 
+-- Date header keymaps
+-- Daily: ## Saturday, January 31, 2026
+vim.keymap.set('n', '<leader>dd', function()
+  local input = vim.fn.input('Date (YYYY-MM-DD): ', os.date('%Y-%m-%d'))
+  if input == '' then return end
+  local y, m, d = input:match('(%d+)-(%d+)-(%d+)')
+  if not y then return end
+  local t = os.time({ year = y, month = m, day = d })
+  local header = '## ' .. os.date('%A, %B ', t) .. tonumber(os.date('%d', t)) .. os.date(', %Y', t)
+  vim.api.nvim_put({ header, ' - [ ] ', '' }, 'l', true, true)
+end, { desc = '[D]ate header: [D]aily' })
+
+-- Weekly: ## Week of January 19-25, 2026 (W04)
+vim.keymap.set('n', '<leader>dw', function()
+  local input = vim.fn.input('Date in week (YYYY-MM-DD): ', os.date('%Y-%m-%d'))
+  if input == '' then return end
+  local y, m, d = input:match('(%d+)-(%d+)-(%d+)')
+  if not y then return end
+  local now = os.time({ year = y, month = m, day = d })
+  local t = os.date('*t', now)
+  local offset_to_monday = (t.wday - 2) % 7
+  local monday = now - offset_to_monday * 86400
+  local sunday = monday + 6 * 86400
+  local mon_day = tonumber(os.date('%d', monday))
+  local sun_day = tonumber(os.date('%d', sunday))
+  local mon_month = os.date('%B', monday)
+  local sun_month = os.date('%B', sunday)
+  local date_range
+  if mon_month == sun_month then
+    date_range = mon_month .. ' ' .. mon_day .. '-' .. sun_day .. os.date(', %Y', sunday)
+  else
+    date_range = mon_month .. ' ' .. mon_day .. ' - ' .. sun_month .. ' ' .. sun_day .. os.date(', %Y', sunday)
+  end
+  local header = '## Week of ' .. date_range .. ' (W' .. os.date('%V', now) .. ')'
+  vim.api.nvim_put({ header, ' - [ ] ', '' }, 'l', true, true)
+end, { desc = '[D]ate header: [W]eekly' })
+
+-- Monthly: ## February 2026
+vim.keymap.set('n', '<leader>dm', function()
+  local input = vim.fn.input('Month (YYYY-MM): ', os.date('%Y-%m'))
+  if input == '' then return end
+  local y, m = input:match('(%d+)-(%d+)')
+  if not y then return end
+  local t = os.time({ year = y, month = m, day = 1 })
+  local header = '## ' .. os.date('%B %Y', t)
+  vim.api.nvim_put({ header, ' - [ ] ', '' }, 'l', true, true)
+end, { desc = '[D]ate header: [M]onthly' })
+
+-- Yearly: ## 2026
+vim.keymap.set('n', '<leader>dy', function()
+  local input = vim.fn.input('Year (YYYY): ', os.date('%Y'))
+  if input == '' then return end
+  local y = input:match('(%d+)')
+  if not y then return end
+  local header = '## ' .. y
+  vim.api.nvim_put({ header, ' - [ ] ', '' }, 'l', true, true)
+end, { desc = '[D]ate header: [Y]early' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
