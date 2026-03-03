@@ -571,16 +571,47 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      local actions = require 'telescope.actions'
       require('telescope').setup {
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          mappings = {
+            i = {
+              -- Open all selected files (or current if none selected) into buffers
+              ['<CR>'] = function(prompt_bufnr)
+                local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+                local multi_selections = picker:get_multi_selection()
+
+                if #multi_selections > 0 then
+                  actions.close(prompt_bufnr)
+                  for _, entry in ipairs(multi_selections) do
+                    if entry.path then
+                      vim.cmd('edit ' .. vim.fn.fnameescape(entry.path))
+                    end
+                  end
+                else
+                  actions.select_default(prompt_bufnr)
+                end
+              end,
+            },
+            n = {
+              ['<CR>'] = function(prompt_bufnr)
+                local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+                local multi_selections = picker:get_multi_selection()
+
+                if #multi_selections > 0 then
+                  actions.close(prompt_bufnr)
+                  for _, entry in ipairs(multi_selections) do
+                    if entry.path then
+                      vim.cmd('edit ' .. vim.fn.fnameescape(entry.path))
+                    end
+                  end
+                else
+                  actions.select_default(prompt_bufnr)
+                end
+              end,
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -1072,10 +1103,63 @@ require('lazy').setup({
         },
       }
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- Detect system appearance (macOS and Linux)
+      local function get_system_appearance()
+        local uname = vim.loop.os_uname().sysname
+
+        if uname == 'Darwin' then
+          -- macOS: check AppleInterfaceStyle
+          local handle = io.popen 'defaults read -g AppleInterfaceStyle 2>/dev/null'
+          if handle then
+            local result = handle:read '*a'
+            handle:close()
+            return result:match 'Dark' and 'dark' or 'light'
+          end
+        elseif uname == 'Linux' then
+          -- Linux: check GNOME/GTK color scheme preference
+          local handle = io.popen 'gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null'
+          if handle then
+            local result = handle:read '*a'
+            handle:close()
+            if result:match 'dark' then
+              return 'dark'
+            elseif result:match 'light' or result:match 'default' then
+              return 'light'
+            end
+          end
+          -- Fallback: check GTK theme name for 'dark' suffix
+          handle = io.popen 'gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null'
+          if handle then
+            local result = handle:read '*a'
+            handle:close()
+            if result:lower():match 'dark' then
+              return 'dark'
+            end
+          end
+        end
+
+        return 'dark'
+      end
+
+      local function set_colorscheme_from_system()
+        local appearance = get_system_appearance()
+        if appearance == 'light' then
+          vim.cmd.colorscheme 'tokyonight-day'
+        else
+          vim.cmd.colorscheme 'tokyonight-night'
+        end
+      end
+
+      -- Set initial colorscheme based on system appearance
+      set_colorscheme_from_system()
+
+      -- Check for appearance changes when Neovim gains focus
+      vim.api.nvim_create_autocmd('FocusGained', {
+        callback = set_colorscheme_from_system,
+      })
+
+      -- Add command to manually toggle/refresh the colorscheme
+      vim.api.nvim_create_user_command('ColorschemeSync', set_colorscheme_from_system, {})
     end,
   },
 
