@@ -174,6 +174,9 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- Automatically reload files when changed outside of Neovim
+vim.o.autoread = true
+
 -- Show filename at the top of the window
 vim.o.winbar = '%f %m'
 
@@ -307,6 +310,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+-- Trigger autoread when files change on disk
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
+  desc = 'Check for file changes and reload buffers',
+  group = vim.api.nvim_create_augroup('kickstart-autoread', { clear = true }),
+  callback = function()
+    if vim.fn.getcmdwintype() == '' then
+      vim.cmd 'checktime'
+    end
   end,
 })
 
