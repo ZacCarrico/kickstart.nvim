@@ -292,6 +292,7 @@ end, { desc = '[G]it commit with [M]essage' })
 vim.keymap.set('n', '<leader>gA', ':Git commit --amend<CR>', { desc = '[G]it commit [A]mend' })
 vim.keymap.set('n', '<leader>gl', ':Git log<CR>', { desc = '[G]it [L]og' })
 vim.keymap.set('n', '<leader>gb', ':Git blame<CR>', { desc = '[G]it [B]lame' })
+vim.keymap.set('n', '<leader>gp', ':Git push<CR>', { desc = '[G]it [P]ush' })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
