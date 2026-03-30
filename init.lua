@@ -169,6 +169,9 @@ vim.o.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
 
+-- Use Cursor highlight group for block cursor so color overrides take effect
+vim.opt.guicursor = 'n-v-c-sm:block-Cursor,i-ci-ve:ver25-Cursor,r-cr-o:hor20-Cursor'
+
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
@@ -1175,6 +1178,15 @@ require('lazy').setup({
 
       -- Add command to manually toggle/refresh the colorscheme
       vim.api.nvim_create_user_command('ColorschemeSync', set_colorscheme_from_system, {})
+
+      -- White cursor (overrides colorscheme default)
+      local function set_cursor_hl()
+        vim.opt.termguicolors = true
+        vim.api.nvim_set_hl(0, 'Cursor',     { fg = '#1e1e2e', bg = '#cdd6f4' })
+        vim.api.nvim_set_hl(0, 'TermCursor', { fg = '#1e1e2e', bg = '#cdd6f4' })
+      end
+      vim.api.nvim_create_autocmd('ColorScheme', { callback = set_cursor_hl })
+      set_cursor_hl()
     end,
   },
 
