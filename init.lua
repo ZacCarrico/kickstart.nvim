@@ -1232,13 +1232,14 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
     build = ':TSUpdate',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     -- nvim-treesitter v1.x removed the `configs` module; highlighting is now
     -- handled by the built-in vim.treesitter. This config installs parsers and
     -- enables highlighting/indent per filetype.
     config = function()
-      require('nvim-treesitter.install').install({
+      require('nvim-treesitter').install({
         'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'python', 'query', 'vim', 'vimdoc',
       })
       vim.api.nvim_create_autocmd('FileType', {
