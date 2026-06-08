@@ -203,6 +203,19 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- Switch to last buffer
 vim.keymap.set('n', '<leader>b', '<C-^>', { desc = 'Switch to last [B]uffer' })
 
+-- Copy current buffer's full path / filename to clipboard
+vim.keymap.set('n', '<leader>cp', function()
+  local path = vim.fn.expand '%:p'
+  vim.fn.setreg('+', path)
+  vim.notify('Copied: ' .. path)
+end, { desc = '[C]opy full [P]ath of buffer' })
+
+vim.keymap.set('n', '<leader>cfn', function()
+  local name = vim.fn.expand '%:t'
+  vim.fn.setreg('+', name)
+  vim.notify('Copied: ' .. name)
+end, { desc = '[C]opy [F]ile [N]ame of buffer' })
+
 -- Date header keymaps
 -- Daily: ## Saturday, January 31, 2026
 vim.keymap.set('n', '<leader>dd', function()
