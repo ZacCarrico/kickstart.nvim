@@ -1167,6 +1167,20 @@ require('lazy').setup({
               return 'dark'
             end
           end
+
+          -- Fallback: when running inside the Lima container (no gsettings),
+          -- query the Mac host's appearance over SSH. The marker lets us tell a
+          -- successful connection (light mode = empty value) from an SSH failure.
+          handle = io.popen 'ssh -o ConnectTimeout=3 -o BatchMode=yes zac@host.lima.internal \'echo "MODE=$(defaults read -g AppleInterfaceStyle 2>/dev/null)"\' 2>/dev/null'
+          if handle then
+            local result = handle:read '*a'
+            handle:close()
+            if result:match 'MODE=Dark' then
+              return 'dark'
+            elseif result:match 'MODE=' then
+              return 'light'
+            end
+          end
         end
 
         return 'dark'
