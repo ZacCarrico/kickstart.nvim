@@ -129,6 +129,12 @@ vim.opt.clipboard = 'unnamedplus'
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Soft-wrap long lines at word boundaries (display only; no hard line breaks
+-- are inserted into the file). Pairs with breakindent above.
+--  See `:help 'wrap'` and `:help 'linebreak'`
+vim.o.wrap = true
+vim.o.linebreak = true
+
 -- Save undo history
 vim.o.undofile = true
 
