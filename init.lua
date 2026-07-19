@@ -1148,6 +1148,18 @@ require('lazy').setup({
 
       -- Detect system appearance (macOS and Linux)
       local function get_system_appearance()
+        -- Explicit override file wins. Written by the `tml`/`tmd` shell
+        -- aliases so light/dark works over SSH, where OS-appearance probing
+        -- (gsettings/defaults) is unavailable.
+        local f = io.open(vim.fn.expand '~/.config/nvim-appearance', 'r')
+        if f then
+          local mode = f:read '*l'
+          f:close()
+          if mode == 'light' or mode == 'dark' then
+            return mode
+          end
+        end
+
         local uname = vim.loop.os_uname().sysname
 
         if uname == 'Darwin' then
