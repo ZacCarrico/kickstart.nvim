@@ -1230,11 +1230,19 @@ require('lazy').setup({
       -- Add command to manually toggle/refresh the colorscheme
       vim.api.nvim_create_user_command('ColorschemeSync', set_colorscheme_from_system, {})
 
-      -- White cursor (overrides colorscheme default)
+      -- High-contrast cursor (overrides colorscheme default). On light
+      -- backgrounds the pale cursor is nearly invisible, so pick a dark,
+      -- saturated color there and the pale one on dark backgrounds.
       local function set_cursor_hl()
         vim.opt.termguicolors = true
-        vim.api.nvim_set_hl(0, 'Cursor',     { fg = '#1e1e2e', bg = '#cdd6f4' })
-        vim.api.nvim_set_hl(0, 'TermCursor', { fg = '#1e1e2e', bg = '#cdd6f4' })
+        local cursor
+        if vim.o.background == 'light' then
+          cursor = { fg = '#ffffff', bg = '#2e7de9' } -- tokyonight-day blue
+        else
+          cursor = { fg = '#1e1e2e', bg = '#cdd6f4' }
+        end
+        vim.api.nvim_set_hl(0, 'Cursor', cursor)
+        vim.api.nvim_set_hl(0, 'TermCursor', cursor)
       end
       vim.api.nvim_create_autocmd('ColorScheme', { callback = set_cursor_hl })
       set_cursor_hl()
