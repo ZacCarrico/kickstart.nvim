@@ -311,6 +311,12 @@ vim.keymap.set('n', '<leader>gm', function()
     vim.cmd('Git commit -a -m "' .. msg:gsub('"', '\\"') .. '"')
   end
 end, { desc = '[G]it commit with [M]essage' })
+vim.keymap.set('n', '<leader>gaa', function()
+  local msg = vim.fn.input 'Commit message: '
+  if msg ~= '' then
+    vim.cmd('Git commit ' .. vim.fn.expand '%' .. ' -m "' .. msg:gsub('"', '\\"') .. '"')
+  end
+end, { desc = '[G]it stage [a]ll + commit current file' })
 vim.keymap.set('n', '<leader>gA', ':Git commit --amend<CR>', { desc = '[G]it commit [A]mend' })
 vim.keymap.set('n', '<leader>gl', ':Git log<CR>', { desc = '[G]it [L]og' })
 vim.keymap.set('n', '<leader>gb', ':Git blame<CR>', { desc = '[G]it [B]lame' })
