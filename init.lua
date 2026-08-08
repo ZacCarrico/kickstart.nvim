@@ -121,9 +121,19 @@ vim.o.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
--- Sync clipboard between OS and Neovim.
---  This makes all yank/delete operations use the system clipboard
---  See `:help 'clipboard'`
+-- Use OSC 52 for clipboard so yanks travel through SSH to iTerm2's clipboard.
+-- This makes Cmd+V work in other terminal panes after yanking in nvim.
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+  },
+}
 vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
@@ -318,7 +328,7 @@ vim.keymap.set('n', '<leader>gaa', function()
   end
 end, { desc = '[G]it stage [a]ll + commit current file' })
 vim.keymap.set('n', '<leader>gA', ':Git commit --amend<CR>', { desc = '[G]it commit [A]mend' })
-vim.keymap.set('n', '<leader>gl', ':Git log<CR>', { desc = '[G]it [L]og' })
+vim.keymap.set('n', '<leader>gl', ':Git pull<CR>', { desc = '[G]it pu[l]l' })
 vim.keymap.set('n', '<leader>gb', ':Git blame<CR>', { desc = '[G]it [B]lame' })
 vim.keymap.set('n', '<leader>gp', ':Git push<CR>', { desc = '[G]it [P]ush' })
 
@@ -339,6 +349,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+-- Sync yanked text into tmux clipboard buffer so prefix+] pastes it in other panes
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Copy yanked text to tmux clipboard buffer',
+  group = vim.api.nvim_create_augroup('kickstart-tmux-yank', { clear = true }),
+  callback = function()
+    if vim.env.TMUX and vim.v.event.operator == 'y' then
+      local text = table.concat(vim.v.event.regcontents, '\n')
+      vim.fn.system('tmux load-buffer -', text)
+    end
   end,
 })
 
