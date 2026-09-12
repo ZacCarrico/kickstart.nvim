@@ -10,6 +10,7 @@ return {
   keys = {
     { '<leader>aa', '<cmd>AvanteAsk<cr>', desc = 'Avante Ask' },
     { '<leader>at', '<cmd>AvanteToggle<cr>', desc = 'Avante Toggle' },
+    { '<leader>ae', '<cmd>AvanteEdit<cr>', mode = { 'n', 'v' }, desc = 'Avante Edit' },
   },
   dependencies = {
     'nvim-lua/plenary.nvim',
